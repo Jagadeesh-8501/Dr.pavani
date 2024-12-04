@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs - Dakshin Hospital</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Our Blog</h1>
+    <p>Explore the latest articles and updates from Dakshin Hospital</p>
+  </header>
+
+  <section id="blogs-list">
+    <!-- Blog posts will be dynamically inserted here -->
+  </section>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Dakshin Hospital. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Fetch and display blog posts
+    fetch('blogs.json')
+      .then(response => response.json())
+      .then(data => {
+        const blogsList = document.getElementById('blogs-list');
+        
+        data.blogs.forEach(blog => {
+          const blogItem = document.createElement('div');
+          blogItem.classList.add('blog-item');
+          
+          blogItem.innerHTML = `
+            <img src="${blog.thumbnail}" alt="${blog.title}" class="blog-thumbnail">
+            <h2><a href="blog-details.html?blog=${blog.title}">${blog.title}</a></h2>
+            <p><strong>By: </strong>${blog.author} | <strong>Date: </strong>${blog.date}</p>
+            <p>${blog.content.substring(0, 200)}...</p>
+          `;
+          
+          blogsList.appendChild(blogItem);
+        });
+      })
+      .catch(error => console.error('Error loading blogs:', error));
+
+    // Set the current year for the footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

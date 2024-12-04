@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Details - Dakshin Hospital</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="blog-title">Blog Title</h1>
+    <p id="blog-author-date"></p>
+  </header>
+
+  <section id="blog-content">
+    <!-- Blog content will be dynamically inserted here -->
+  </section>
+
+  <section id="share">
+    <p>Share this post:</p>
+    <a href="#" id="facebook-link">Facebook</a> | 
+    <a href="#" id="twitter-link">Twitter</a> | 
+    <a href="#" id="skype-link">Skype</a>
+  </section>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Dakshin Hospital. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Get the blog title from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogTitle = urlParams.get('blog');
+
+    // Fetch and display the specific blog details
+    fetch('blogs.json')
+      .then(response => response.json())
+      .then(data => {
+        const blog = data.blogs.find(b => b.title === blogTitle);
+        if (blog) {
+          // Set blog title
+          document.getElementById('blog-title').textContent = blog.title;
+          document.getElementById('blog-author-date').textContent = `By: ${blog.author} | Date: ${blog.date}`;
+          document.getElementById('blog-content').innerHTML = `
+            <img src="${blog.image}" alt="${blog.title}" class="blog-image">
+            <p>${blog.content}</p>
+            <blockquote>${blog.quote}</blockquote>
+          `;
+
+          // Set social media links
+          document.getElementById('facebook-link').href = blog.share.facebook;
+          document.getElementById('twitter-link').href = blog.share.twitter;
+          document.getElementById('skype-link').href = blog.share.skype;
+        } else {
+          document.querySelector('main').innerHTML = '<p>Blog not found.</p>';
+        }
+      })
+      .catch(error => console.error('Error loading blog details:', error));
+
+    // Set the current year for the footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
